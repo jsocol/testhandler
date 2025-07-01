@@ -1,7 +1,9 @@
 package testhandler_test
 
 import (
+	"errors"
 	"log/slog"
+	"reflect"
 	"testing"
 
 	"github.com/jsocol/testhandler"
@@ -39,5 +41,35 @@ func TestTestHandler_Reset(t *testing.T) {
 
 	if len(h.Records) != 0 {
 		t.Errorf("expected h.Records to have length 0, got %d", len(h.Records))
+	}
+}
+
+func TestTestHandler_First_Empty(t *testing.T) {
+	h := testhandler.New(slog.LevelDebug)
+
+	r, err := h.First()
+
+	emptyRecord := slog.Record{}
+	if !reflect.DeepEqual(r, emptyRecord) {
+		t.Errorf("expected record to be empty")
+	}
+
+	if !errors.Is(err, testhandler.ErrEmpty) {
+		t.Errorf("expected err to be ErrEmpty, got %v", err)
+	}
+}
+
+func TestTestHandler_Last_Empty(t *testing.T) {
+	h := testhandler.New(slog.LevelDebug)
+
+	r, err := h.Last()
+
+	emptyRecord := slog.Record{}
+	if !reflect.DeepEqual(r, emptyRecord) {
+		t.Errorf("expected record to be empty")
+	}
+
+	if !errors.Is(err, testhandler.ErrEmpty) {
+		t.Errorf("expected err to be ErrEmpty, got %v", err)
 	}
 }
