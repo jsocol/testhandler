@@ -73,3 +73,27 @@ func TestTestHandler_Last_Empty(t *testing.T) {
 		t.Errorf("expected err to be ErrEmpty, got %v", err)
 	}
 }
+
+func TestTestHandler_Levels(t *testing.T) {
+	h := testhandler.New(slog.LevelWarn)
+
+	l := slog.New(h)
+
+	l.Info("hello")
+
+	if len(h.Records) != 0 {
+		t.Errorf("expected no records, got %d", len(h.Records))
+	}
+
+	l.Warn("oh no")
+
+	if len(h.Records) != 1 {
+		t.Errorf("expected 1 record, got %d", len(h.Records))
+	}
+
+	l.Error("whoops")
+
+	if len(h.Records) != 2 {
+		t.Errorf("expected 2 records, got %d", len(h.Records))
+	}
+}
